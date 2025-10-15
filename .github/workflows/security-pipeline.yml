@@ -28,10 +28,12 @@ jobs:
           pip install Flask pytest bandit
 
       # 🔹 Unit tests
-      - name: Run unit tests
+      - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          export PYTHONPATH="${PYTHONPATH}:${GITHUB_WORKSPACE}"
-          pytest tests --maxfail=1 --disable-warnings -q
+          pytest -q
+          echo "All tests passed!"
 
       # SAST - Bandit
       - name: Run Bandit (SAST)
