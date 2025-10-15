@@ -29,7 +29,9 @@ jobs:
 
       # 🔹 Unit tests
       - name: Run unit tests
-        run: pytest tests --maxfail=1 --disable-warnings -q
+        run: |
+          export PYTHONPATH="${PYTHONPATH}:${GITHUB_WORKSPACE}"
+          pytest tests --maxfail=1 --disable-warnings -q
 
       # SAST - Bandit
       - name: Run Bandit (SAST)
