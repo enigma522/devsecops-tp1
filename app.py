@@ -27,7 +27,22 @@ def setup():
 def index():
     return render_template("index.html")
 
-# 🔴 Vulnerable to SQL Injection
+# @app.route("/search")
+# def search():
+#     q = request.args.get("q", "")
+#     conn = sqlite3.connect(DB_NAME)
+#     cur = conn.cursor()
+#     query = "SELECT username FROM users WHERE username LIKE ?"
+#     print("Executing:", query, "with param:", f"%{q}%")
+#     try:
+#         cur.execute(query, (f"%{q}%",))  
+#         results = cur.fetchall()
+#     except Exception as e:
+#         results = [("Error", str(e))]
+#     conn.close()
+#     return {"results": results}
+
+
 @app.route("/search")
 def search():
     q = request.args.get("q", "")
@@ -36,21 +51,20 @@ def search():
     query = f"SELECT username FROM users WHERE username LIKE '%{q}%'"
     print("Executing:", query)
     try:
-        cur.execute(query)  # ⚠️ Vulnerable
+        cur.execute(query)
         results = cur.fetchall()
     except Exception as e:
         results = [("Error", str(e))]
     conn.close()
     return {"results": results}
 
-# 🔴 Vulnerable to SSTI
 @app.route("/greet")
 def greet():
     name = request.args.get("name", "Guest")
-    template = f"<h2>Hello {name}!</h2>"  # ⚠️ Direct injection into template
+    template = f"<h2>Hello {name}!</h2>"  
     return render_template_string(template)
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-
