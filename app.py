@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, abort
 import sqlite3
 import os
-import re
 
 app = Flask(__name__)
 DB_NAME = "users.db"
@@ -30,8 +29,16 @@ def add_security_headers(response):
     response.headers['X-Frame-Options'] = 'DENY'
     # Prevent MIME type sniffing
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    # Content Security Policy
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self';"
+    # Strong Content Security Policy
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self'; "
+        "img-src 'self'; "
+        "font-src 'self'; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none';"
+    )
     # Permissions Policy
     response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
     # Hide server version
@@ -49,7 +56,6 @@ def search():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     query = "SELECT username FROM users WHERE username LIKE ?"
-    print("Executing:", query, "with param:", f"%{q}%")
     try:
         cur.execute(query, (f"%{q}%",))  # Safe parameterized query
         results = cur.fetchall()
@@ -69,4 +75,5 @@ def greet():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
+    # Debug must be False in production
     app.run(host="0.0.0.0", port=port, debug=False)
