@@ -64,10 +64,10 @@ def search():
 @app.route("/greet")
 def greet():
     name = request.args.get("name", "Guest")
-    if not re.fullmatch(r"[A-Za-z\s]{1,50}", name):
+    allowed_names = {"Alice", "Bob", "Charlie", "Guest"}
+    if name not in allowed_names:
         abort(400, "Invalid name")
     return render_template("greeting.html", name=name)
-
 
 
 if __name__ == "__main__":
