@@ -1,8 +1,7 @@
-from flask import Flask, request, render_template, render_template_string
+from flask import Flask, request, render_template, abort
 import sqlite3
 import os
 import re
-from werkzeug.exceptions import abort
 
 app = Flask(__name__)
 DB_NAME = "users.db"
@@ -25,6 +24,21 @@ def setup():
     init_db()
     return "Database initialized with sample users!"
 
+@app.after_request
+def add_security_headers(response):
+    # Clickjacking protection
+    response.headers['X-Frame-Options'] = 'DENY'
+    # Prevent MIME type sniffing
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    # Content Security Policy
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self';"
+    # Permissions Policy
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+    # Hide server version
+    response.headers['Server'] = 'MyApp'
+    return response
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -37,34 +51,17 @@ def search():
     query = "SELECT username FROM users WHERE username LIKE ?"
     print("Executing:", query, "with param:", f"%{q}%")
     try:
-        cur.execute(query, (f"%{q}%",))  
+        cur.execute(query, (f"%{q}%",))  # Safe parameterized query
         results = cur.fetchall()
     except Exception as e:
         results = [("Error", str(e))]
     conn.close()
     return {"results": results}
 
-
-# @app.route("/search")
-# def search():
-#     q = request.args.get("q", "")
-#     conn = sqlite3.connect(DB_NAME)
-#     cur = conn.cursor()
-#     query = f"SELECT username FROM users WHERE username LIKE '%{q}%'"
-#     print("Executing:", query)
-#     try:
-#         cur.execute(query)
-#         results = cur.fetchall()
-#     except Exception as e:
-#         results = [("Error", str(e))]
-#     conn.close()
-#     return {"results": results}
-
-
 @app.route("/greet")
 def greet():
     name = request.args.get("name", "Guest")
-    allowed_names = {"Alice", "Bob", "Charlie", "Guest"}
+    allowed_names = {"Alice", "Bob", "Charlie", "Guest"}  # Allow-list
     if name not in allowed_names:
         abort(400, "Invalid name")
     return render_template("greeting.html", name=name)
