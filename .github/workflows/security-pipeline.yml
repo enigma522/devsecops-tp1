@@ -58,21 +58,26 @@ jobs:
           path: bandit-output.json
 
       # 🔹 SCA - Snyk
-      - name: Run Snyk SCA
-        uses: snyk/actions/python-3.10@master
-        continue-on-error: false
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high --json-file-output=snyk_report.json
-      
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk Test
+        run: |
+          if [ -f requirements.txt ]; then
+            snyk test --file=requirements.txt --severity-threshold=high --json-file-output=snyk_report.json
+          else
+            snyk test --severity-threshold=high --json-file-output=snyk_report.json
+          fi
+
       - name: Upload Snyk Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: snyk-security-report
           path: snyk_report.json
-
 
   dast-zap:
     runs-on: ubuntu-latest
