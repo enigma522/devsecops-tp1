@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, render_template_string
 import sqlite3
 import os
+import re
+from werkzeug.exceptions import abort
 
 app = Flask(__name__)
 DB_NAME = "users.db"
@@ -62,6 +64,8 @@ def search():
 @app.route("/greet")
 def greet():
     name = request.args.get("name", "Guest")
+    if not re.fullmatch(r"[A-Za-z\s]{1,50}", name):
+        abort(400, "Invalid name")
     return render_template("greeting.html", name=name)
 
 
