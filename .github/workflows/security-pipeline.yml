@@ -50,6 +50,13 @@ jobs:
               print("Bandit: no HIGH issues")
           PY
 
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-report
+          path: bandit-output.json
+
       # 🔹 SCA - Snyk
       - name: Run Snyk SCA
         uses: snyk/actions/python-3.10@master
