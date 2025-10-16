@@ -61,15 +61,14 @@ jobs:
       - name: Install Snyk CLI
         run: npm install -g snyk
 
-      - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
       - name: Run Snyk Test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           if [ -f requirements.txt ]; then
-            snyk test --file=requirements.txt --severity-threshold=high --json-file-output=snyk_report.json
+            snyk test --file=requirements.txt --severity-threshold=high
           else
-            snyk test --severity-threshold=high --json-file-output=snyk_report.json
+            snyk test --severity-threshold=high
           fi
 
       - name: Upload Snyk Report
