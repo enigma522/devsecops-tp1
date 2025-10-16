@@ -72,12 +72,14 @@ jobs:
 
 
       # 🔹 SCA - Snyk
-      - name: Snyk Security Scan
+      - name: Run Snyk SCA
         uses: snyk/actions/python-3.10@master
+        continue-on-error: false
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          command: test
+          args: --severity-threshold=high --json-file-output=snyk_report.json
+
       - name: Upload Snyk Report
         uses: actions/upload-artifact@v4
         if: always()
