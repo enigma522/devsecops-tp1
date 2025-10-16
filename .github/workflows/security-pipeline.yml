@@ -72,14 +72,19 @@ jobs:
 
 
       # 🔹 SCA - Snyk
-      - name: Run Snyk SCA
-        uses: snyk/actions/python-3.10@master
-        continue-on-error: true
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Try to authenticate (will fail)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
-
+        run: snyk auth "$SNYK_TOKEN"
+        
+      - name: Run Snyk Test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk test --severity-threshold=high --json-file-output=snyk_report.json
       - name: Upload Snyk Report
         uses: actions/upload-artifact@v4
         if: always()
