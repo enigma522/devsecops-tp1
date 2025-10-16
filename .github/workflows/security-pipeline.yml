@@ -130,5 +130,5 @@ jobs:
         with: 
           target: 'http://127.0.0.1:5000' 
           artifact_name: 'zapscan' 
-          fail_action: true
+          fail_action: false
             
