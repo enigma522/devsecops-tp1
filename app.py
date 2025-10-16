@@ -27,15 +27,31 @@ def setup():
 def index():
     return render_template("index.html")
 
+@app.route("/search")
+def search():
+    q = request.args.get("q", "")
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    query = "SELECT username FROM users WHERE username LIKE ?"
+    print("Executing:", query, "with param:", f"%{q}%")
+    try:
+        cur.execute(query, (f"%{q}%",))  
+        results = cur.fetchall()
+    except Exception as e:
+        results = [("Error", str(e))]
+    conn.close()
+    return {"results": results}
+
+
 # @app.route("/search")
 # def search():
 #     q = request.args.get("q", "")
 #     conn = sqlite3.connect(DB_NAME)
 #     cur = conn.cursor()
-#     query = "SELECT username FROM users WHERE username LIKE ?"
-#     print("Executing:", query, "with param:", f"%{q}%")
+#     query = f"SELECT username FROM users WHERE username LIKE '%{q}%'"
+#     print("Executing:", query)
 #     try:
-#         cur.execute(query, (f"%{q}%",))  
+#         cur.execute(query)
 #         results = cur.fetchall()
 #     except Exception as e:
 #         results = [("Error", str(e))]
@@ -43,26 +59,11 @@ def index():
 #     return {"results": results}
 
 
-@app.route("/search")
-def search():
-    q = request.args.get("q", "")
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-    query = f"SELECT username FROM users WHERE username LIKE '%{q}%'"
-    print("Executing:", query)
-    try:
-        cur.execute(query)
-        results = cur.fetchall()
-    except Exception as e:
-        results = [("Error", str(e))]
-    conn.close()
-    return {"results": results}
-
 @app.route("/greet")
 def greet():
     name = request.args.get("name", "Guest")
-    template = f"<h2>Hello {name}!</h2>"  
-    return render_template_string(template)
+    return render_template("greeting.html", name=name)
+
 
 
 if __name__ == "__main__":
