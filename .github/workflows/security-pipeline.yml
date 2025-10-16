@@ -57,6 +57,20 @@ jobs:
           name: bandit-report
           path: bandit-output.json
 
+      - name: Debug - Check Snyk Token
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "❌ SNYK_TOKEN is NOT set or is empty"
+            exit 1
+          else
+            echo "✅ SNYK_TOKEN is set"
+            echo "Token length: ${#SNYK_TOKEN} characters"
+            echo "Token preview: ${SNYK_TOKEN:0:8}...${SNYK_TOKEN: -4}"
+          fi
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+
       # 🔹 SCA - Snyk
       - name: Run Snyk SCA
         uses: snyk/actions/python-3.10@master
