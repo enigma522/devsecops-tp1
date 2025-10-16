@@ -64,7 +64,15 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high
+          args: --severity-threshold=high --json-file-output=snyk_report.json
+      
+      - name: Upload Snyk Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: snyk-security-report
+          path: snyk_report.json
+
 
   dast-zap:
     runs-on: ubuntu-latest
