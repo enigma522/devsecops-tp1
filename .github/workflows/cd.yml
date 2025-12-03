@@ -37,6 +37,7 @@ jobs:
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+          echo "$PWD/bin" >> $GITHUB_PATH
 
       - name: Scan Docker image
         run: |
