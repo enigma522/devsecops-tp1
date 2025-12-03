@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}"
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/myapp:leatest"
           docker build -t $IMAGE .
           docker push $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV

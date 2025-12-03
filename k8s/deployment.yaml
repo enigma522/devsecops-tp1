@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: myapp-container
-        image: mydockerhubuser/myapp:latest   
+        image: enigma5221/myapp:latest   
         ports:
           - containerPort: 5000
 ---
