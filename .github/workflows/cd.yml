@@ -41,10 +41,7 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           project_id: ${{ secrets.PROJECT_ID }}
           export_default_credentials: true
-
-      - name: Authenticate to GCP
-        run: |
-          gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+          service_account: github-deployer
 
 
       - name: Get GKE credentials
