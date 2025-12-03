@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest"
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}"
           docker build -t $IMAGE .
           docker push $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
@@ -62,6 +62,7 @@ jobs:
           gcloud container clusters get-credentials tp3 --region europe-west9 --project ${{ secrets.PROJECT_ID }}
 
 
+
       - name: Apply other Kubernetes manifests
         run: |
-          kubectl replace --force -f k8s/deployment.yaml
+          kubectl set image deployment/myapp-deployment myapp-container=$IMAGE
