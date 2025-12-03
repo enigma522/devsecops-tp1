@@ -46,12 +46,20 @@ jobs:
         uses: google-github-actions/setup-gcloud@v3
         with:
           project_id: ${{ secrets.PROJECT_ID }}
+          install_components: kubectl,gke-gcloud-auth-plugin
 
 
       - name: Get GKE credentials
         run: |
           gcloud container clusters get-credentials tp3 --region europe-west9 --project ${{ secrets.PROJECT_ID }}
 
-      - name: Deploy manifests to GKE
+      - name: Update Deployment image
+        run: |
+          kubectl set image deployment/myapp-deployment \
+            myapp-container=$IMAGE \
+            --record
+          kubectl rollout status deployment/myapp-deployment
+
+      - name: Apply other Kubernetes manifests
         run: |
           kubectl apply -f k8s/
