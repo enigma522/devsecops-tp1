@@ -44,7 +44,7 @@ jobs:
 
       - name: Get GKE credentials
         run: |
-          gcloud container clusters get-credentials tp3 --region europe-west9
+          gcloud container clusters get-credentials tp3 --region europe-west9 --project ${{ secrets.PROJECT_ID }}
 
       - name: Deploy manifests to GKE
         run: |
