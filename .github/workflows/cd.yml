@@ -29,10 +29,18 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/myapp:leatest"
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest"
           docker build -t $IMAGE .
           docker push $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      # - name: Install Trivy
+      #   run: |
+      #     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+
+      # - name: Scan Docker image
+      #   run: |
+      #     trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE
 
 
       - name: Authenticate to GCP
