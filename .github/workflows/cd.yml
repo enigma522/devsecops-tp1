@@ -53,12 +53,6 @@ jobs:
         run: |
           gcloud container clusters get-credentials tp3 --region europe-west9 --project ${{ secrets.PROJECT_ID }}
 
-      - name: Update Deployment image
-        run: |
-          kubectl set image deployment/myapp-deployment \
-            myapp-container=$IMAGE \
-            --record
-          kubectl rollout status deployment/myapp-deployment
 
       - name: Apply other Kubernetes manifests
         run: |
