@@ -25,11 +25,8 @@ def setup():
 
 @app.after_request
 def add_security_headers(response):
-    # Clickjacking protection
     response.headers['X-Frame-Options'] = 'DENY'
-    # Prevent MIME type sniffing
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    # Strong Content Security Policy
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
         "script-src 'self'; "
@@ -39,9 +36,7 @@ def add_security_headers(response):
         "connect-src 'self'; "
         "frame-ancestors 'none';"
     )
-    # Permissions Policy
     response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
-    # Hide server version
     response.headers['Server'] = 'MyApp'
     return response
 
