@@ -5,6 +5,10 @@ import os
 app = Flask(__name__)
 DB_NAME = "users.db"
 
+
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "defaultpassword")
+
+
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
