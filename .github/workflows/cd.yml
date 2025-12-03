@@ -64,4 +64,4 @@ jobs:
 
       - name: Apply other Kubernetes manifests
         run: |
-          kubectl apply -f k8s/ --server-side
+          kubectl replace --force -f k8s/deployment.yaml

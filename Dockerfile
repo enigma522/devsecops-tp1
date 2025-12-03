@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.10
 
 ENV DB_PASSWORD="supersecret123"
 
@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y curl vim
 
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
+
+# Upgrade pip and install dependencies
+RUN python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
